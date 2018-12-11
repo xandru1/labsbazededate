@@ -1,0 +1,104 @@
+select * from grupe
+
+select * from discipline 
+		 ORDER BY Nr_ore_plan_disciplina DESC
+
+SELECT DISTINCT discipline.Disciplina, profesori.Nume_Profesor, profesori.Prenume_Profesor
+FROM discipline
+INNER JOIN studenti_reusita
+ON studenti_reusita.Id_Disciplina = discipline.Id_Disciplina
+INNER JOIN profesori
+ON profesori.Id_Profesor =  studenti_reusita.Id_Profesor
+ORDER BY profesori.Nume_Profesor DESC, profesori.Prenume_Profesor DESC
+
+
+select Disciplina	
+		from discipline 
+		where LEN(Disciplina) > 20
+
+
+select * from studenti 
+		 where Nume_Student like '%u'
+
+SELECT TOP 5 *
+FROM [dbo].[studenti] AS [s]
+INNER JOIN [dbo].[studenti_reusita] AS [r]
+ON [s].[Id_Student] = [r].[Id_Student]
+WHERE [r].[Id_Disciplina] = (
+	SELECT [d].[Id_Disciplina]
+	FROM [dbo].[discipline] AS [d]
+	WHERE [d].[Disciplina] = 'Baze de date'
+) AND [r].[Tip_Evaluare] = 'Testul 2'
+ORDER BY [r].[Nota] DESC
+
+SELECT DISTINCT [g].[Cod_Grupa]
+FROM [dbo].[grupe] AS [g]
+INNER JOIN [dbo].[studenti_reusita] AS [r]
+ON [g].[Id_Grupa] = [r].[Id_Grupa]
+INNER JOIN [dbo].[studenti] AS [s]
+ON [s].[Id_Student] = [r].[Id_Student]
+WHERE [s].[Adresa_Postala_Student] LIKE ('%31 August%')
+
+--Exercitiu 8 2 exxemple: same
+select distinct studenti.Id_Student , Nume_Student 
+		from studenti_reusita, studenti 
+		where year(Data_Evaluare) = 2018
+
+SELECT [s].[Nume_Student], [s].[Id_Student]
+FROM [dbo].[studenti] AS [s]
+WHERE [s].[Id_Student] IN (
+	SELECT [r].[Id_Student]
+	FROM [dbo].[studenti_reusita] AS [r]
+	WHERE YEAR(Data_Evaluare) = 2018)
+
+--
+SELECT AVG(Nota) AS 'media la baze de date' FROM studenti_reusita WHERE Id_Disciplina = 107 
+
+
+
+--interogarea 37
+
+SELECT [d].[Disciplina] 
+FROM [dbo].[discipline] AS [d]
+WHERE [d].[Id_Disciplina] IN (
+	SELECT [r].[Id_Disciplina]
+	FROM [dbo].[studenti_reusita] AS [r]
+	GROUP BY ([r].[Id_Disciplina]) 
+	HAVING AVG([r].[Nota]) > (
+		SELECT AVG([r1].[Nota])
+		FROM [dbo].[studenti_reusita] AS [r1]
+		WHERE [r1].[Id_Disciplina] = (
+			SELECT [d1].[Id_Disciplina]
+			FROM [dbo].[discipline] AS [d1]
+			WHERE [d1].[Disciplina] = 'Baze de date'
+		)
+		GROUP BY ([r1].[Id_Disciplina])
+	)
+)
+
+
+
+SELECT [r1].[Id_Disciplina], COUNT([r1].[Id_Student])
+FROM [dbo].[studenti_reusita] AS [r1]
+WHERE [r1].[Tip_Evaluare] = 'Examen' AND [r1].[Nota] < 5
+GROUP BY [r1].[Id_Disciplina]
+
+
+-- interogarea 12 
+
+SELECT Nume_Student,Prenume_Student, Nota, Data_Evaluare
+FROM studenti , studenti_reusita
+Where Prenume_Student = 'Alex'
+
+--interogarea 28
+Select Nume_Student,Prenume_Student,Avg(Nota) as 'media elevilor'
+from studenti,studenti_reusita,profesori
+where Adresa_Postala_Profesor = 'mun. Chisinau, str. Titulescu, 47'
+group by Nume_Student, Prenume_Student
+
+
+
+select * from studenti_reusita
+
+
+select * from studenti
